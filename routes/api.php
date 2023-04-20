@@ -28,6 +28,7 @@ $v1Helper = [
   "namespace" => "App\Http\Controllers\Api\V1"
 ];
 
+
 Route::group($v1Helper, function() {
   Route::apiResource("customers", CustomerController::class);
   Route::apiResource("invoices", InvoiceController::class);
