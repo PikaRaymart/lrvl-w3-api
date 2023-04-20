@@ -1,5 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Http\Controllers\Api\V1\CustomerController;
+use App\Http\Controllers\Api\V1\InvoiceController;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +20,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
+});
+
+$v1Helper = [
+  "prefix" => "v1", 
+  "namespace" => "App\Http\Controllers\Api\V1"
+];
+
+Route::group($v1Helper, function() {
+  Route::apiResource("customers", CustomerController::class);
+  Route::apiResource("invoices", InvoiceController::class);
 });
