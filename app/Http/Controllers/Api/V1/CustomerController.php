@@ -8,14 +8,22 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1CustomerCollection;
 use App\Http\Resources\V1CustomerResource;
+use App\Services\V1\CustomerQuery;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller{
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index(){
-		
-		return new V1CustomerCollection(Customer::paginate());
+	public function index(Request $request){
+		$filter = new CustomerQuery();
+		$queryItems = $filter->transform($request);
+
+		if (count($queryItems)==0) {
+			return new V1CustomerCollection(Customer::paginate());
+		}
+
+		return new V1CustomerCollection(Customer::where($queryItems)->paginate());
 	}
 
 	/**
