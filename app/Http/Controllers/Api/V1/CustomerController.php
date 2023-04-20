@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1CustomerCollection;
 use App\Http\Resources\V1CustomerResource;
-use App\Services\V1\CustomerQuery;
+use App\Filters\V1\CustomersFilter;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller{
@@ -16,14 +16,16 @@ class CustomerController extends Controller{
 	 * Display a listing of the resource.
 	 */
 	public function index(Request $request){
-		$filter = new CustomerQuery();
+		$filter = new CustomersFilter();
 		$queryItems = $filter->transform($request);
 
 		if (count($queryItems)==0) {
 			return new V1CustomerCollection(Customer::paginate());
 		}
+		$customers = new V1CustomerCollection(Customer::where($queryItems)->paginate());
+		$customers->appends($request->query());
 
-		return new V1CustomerCollection(Customer::where($queryItems)->paginate());
+		return $customers;
 	}
 
 	/**
